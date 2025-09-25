@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatório Interativo - Meta Ads</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .chart-container {
+            position: relative;
+            height: 40vh;
+            width: 100%;
+        }
+        .nav-link {
+            transition: all 0.3s ease;
+        }
+        .nav-link.active {
+            border-bottom-color: #3b82f6; /* blue-500 */
+            color: #3b82f6;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+    <div class="container mx-auto p-4 md:p-8">
+        
+        <header class="mb-8">
+            <h1 class="text-4xl font-bold text-gray-900 mb-2">Análise de Performance - Meta Ads</h1>
+            <p class="text-lg text-gray-600">Relatório para o período de 25 de Agosto a 24 de Setembro de 2025.</p>
+        </header>
+
+        <!-- Navigation -->
+        <nav class="mb-8 border-b border-gray-200">
+            <ul class="flex space-x-8">
+                <li><button id="nav-overview" class="nav-link py-4 px-1 border-b-2 border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700">Visão Geral</button></li>
+                <li><button id="nav-engagement" class="nav-link py-4 px-1 border-b-2 border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700">Análise de Engajamento</button></li>
+                <li><button id="nav-insights" class="nav-link py-4 px-1 border-b-2 border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700">Insights e Recomendações</button></li>
+            </ul>
+        </nav>
+
+        <main>
+            <!-- Page 1: Overview -->
+            <div id="page-overview" class="space-y-8">
+                <!-- KPI Cards -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+                    <div class="bg-white p-6 rounded-xl shadow-sm">
+                        <h3 class="text-sm font-medium text-gray-500">Valor Total Gasto</h3>
+                        <p id="total-spent" class="mt-1 text-3xl font-semibold text-gray-900">-</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-sm">
+                        <h3 class="text-sm font-medium text-gray-500">Alcance Total</h3>
+                        <p id="total-reach" class="mt-1 text-3xl font-semibold text-gray-900">-</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-sm">
+                        <h3 class="text-sm font-medium text-gray-500">Cliques no Link</h3>
+                        <p id="total-clicks" class="mt-1 text-3xl font-semibold text-gray-900">-</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-sm">
+                        <h3 class="text-sm font-medium text-gray-500">CPC Médio</h3>
+                        <p id="avg-cpc" class="mt-1 text-3xl font-semibold text-gray-900">-</p>
+                    </div>
+                </div>
+
+                <!-- Main Chart -->
+                <div class="bg-white p-6 rounded-xl shadow-sm">
+                    <h2 class="text-xl font-semibold mb-4">Evolução de Métricas Principais</h2>
+                    <div class="chart-container">
+                        <canvas id="overviewChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Page 2: Engagement -->
+            <div id="page-engagement" class="hidden space-y-8">
+                <!-- KPI Cards -->
+                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+                    <div class="bg-white p-6 rounded-xl shadow-sm">
+                        <h3 class="text-sm font-medium text-gray-500">Conversas Iniciadas</h3>
+                        <p id="total-conversations" class="mt-1 text-3xl font-semibold text-gray-900">-</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-sm">
+                        <h3 class="text-sm font-medium text-gray-500">Comentários</h3>
+                        <p id="total-comments" class="mt-1 text-3xl font-semibold text-gray-900">-</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-sm">
+                        <h3 class="text-sm font-medium text-gray-500">Compartilhamentos</h3>
+                        <p id="total-shares" class="mt-1 text-3xl font-semibold text-gray-900">-</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-sm">
+                        <h3 class="text-sm font-medium text-gray-500">Custo por Conversa</h3>
+                        <p id="cost-per-conversation" class="mt-1 text-3xl font-semibold text-gray-900">-</p>
+                    </div>
+                </div>
+                
+                <!-- Charts -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div class="bg-white p-6 rounded-xl shadow-sm">
+                         <h2 class="text-xl font-semibold mb-4">Evolução do Engajamento</h2>
+                         <div class="chart-container">
+                            <canvas id="engagementChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-sm">
+                        <h2 class="text-xl font-semibold mb-4">Performance de Vídeo (ThruPlays)</h2>
+                         <div class="chart-container">
+                            <canvas id="videoChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Page 3: Insights -->
+            <div id="page-insights" class="hidden space-y-6">
+                <div class="bg-white p-8 rounded-xl shadow-sm">
+                    <h2 class="text-2xl font-bold mb-6 text-gray-900">Insights, Pontos de Atenção e Recomendações</h2>
+                    
+                    <div class="space-y-8">
+                        <div>
+                            <h3 class="text-xl font-semibold text-blue-600 mb-3">Insights Conclusivos</h3>
+                            <p class="text-gray-700 leading-relaxed">
+                                A campanha demonstrou uma correlação direta entre o investimento diário e o volume de cliques e alcance, como esperado. O final do período, especialmente a partir de 15 de Setembro, concentrou os maiores investimentos e, consequentemente, os picos de alcance e cliques. No entanto, a eficiência (medida pelo CPC) variou significativamente, indicando que nem sempre um maior investimento resultou em um custo por clique mais baixo. A performance geral foi positiva, mas com claras oportunidades de otimização para maximizar o retorno sobre o investimento.
+                            </p>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="bg-green-50 border border-green-200 p-6 rounded-lg">
+                                <h3 class="text-xl font-semibold text-green-700 mb-3">Pontos Positivos</h3>
+                                <ul class="list-disc list-inside space-y-2 text-green-800">
+                                    <li><strong>Alta Eficiência em Dias Específicos:</strong> O dia 23/09 se destacou com o maior número de cliques (52) e um CPC muito baixo (R$ 0,42), indicando um criativo e/ou público altamente eficaz.</li>
+                                    <li><strong>Picos de Engajamento:</strong> O dia 26/08 gerou o maior número de conversas por mensagem (9) com um custo por resultado excelente (R$ 1,45), mostrando grande potencial para anúncios que incentivam a interação direta.</li>
+                                     <li><strong>Crescimento no Final:</strong> A estratégia de aumentar o investimento no final do período foi bem-sucedida em ampliar massivamente o alcance e o número de cliques, ideal para fases de campanha focadas em volume.</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="bg-red-50 border border-red-200 p-6 rounded-lg">
+                                <h3 class="text-xl font-semibold text-red-700 mb-3">Pontos de Atenção</h3>
+                                <ul class="list-disc list-inside space-y-2 text-red-800">
+                                     <li><strong>Alto Custo em Dias de Pico:</strong> O dia 19/09 registrou o maior gasto diário (R$ 26,05), porém o CPC foi um dos mais altos (R$ 1,13). É crucial analisar o porquê deste anúncio não ter performado bem.</li>
+                                     <li><strong>Baixo Engajamento Geral:</strong> Apesar de picos pontuais, a média de comentários e compartilhamentos foi baixa, sugerindo que os criativos poderiam ser mais focados em gerar discussões e viralização.</li>
+                                     <li><strong>Inconsistência do CPC:</strong> A flutuação do Custo por Clique ao longo do mês indica que a performance dos anúncios é irregular. É preciso identificar os fatores que levam aos dias de CPC baixo e replicá-los.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h3 class="text-xl font-semibold text-gray-800 mb-3">Recomendações Estratégicas</h3>
+                             <ol class="list-decimal list-inside space-y-3 text-gray-700">
+                                <li><strong>Analisar e Replicar Vencedores:</strong> Realize uma análise profunda dos anúncios veiculados nos dias de melhor performance (ex: 23/09 para cliques, 26/08 para conversas). Isole os criativos, textos e públicos para reutilizá-los em futuras campanhas.</li>
+                                <li><strong>Otimizar ou Pausar Perdedores:</strong> Investigue os anúncios dos dias com pior performance (ex: 19/09). Se não for possível otimizar o público ou o criativo, pause-os para evitar desperdício de orçamento.</li>
+                                <li><strong>Fomentar o Engajamento:</strong> Crie testes A/B com anúncios que incentivem explicitamente comentários e compartilhamentos, como perguntas diretas no texto ou criativos que gerem debate. Isso pode aumentar o alcance orgânico.</li>
+                                <li><strong>Monitorar o CPC em Tempo Real:</strong> Implemente um acompanhamento mais próximo do CPC. Ao notar um aumento repentino, analise a campanha para identificar se é uma flutuação normal do leilão ou um problema de performance do anúncio.</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+<script>
+// Raw CSV data from the uploaded file
+const csvData = `Dia,Alcance,Impressões,Valor usado (BRL),Cliques no link,Conversas por mensagem iniciadas,Comentários no post,Compartilhamentos do post,ThruPlays,Início dos relatórios,Término dos relatórios
+2025-08-25,870,927,"7,12",15,2,,2,49,2025-08-25,2025-08-25
+2025-08-26,1388,1874,"13,04",35,9,3,2,113,2025-08-26,2025-08-26
+2025-08-27,1185,1445,"9,72",40,2,1,1,78,2025-08-27,2025-08-27
+2025-08-28,1398,1690,"10,77",37,3,3,,50,2025-08-28,2025-08-28
+2025-08-29,1324,1545,"11,21",25,2,2,3,40,2025-08-29,2025-08-29
+2025-08-30,1586,1819,"12,47",23,3,1,2,55,2025-08-30,2025-08-30
+2025-08-31,1733,2150,"13,2",20,1,,1,58,2025-08-31,2025-08-31
+2025-09-01,1830,2292,"12,2",33,6,,1,63,2025-09-01,2025-09-01
+2025-09-02,1256,1513,"9,08",12,2,1,,74,2025-09-02,2025-09-02
+2025-09-03,763,873,"5,75",7,4,1,1,54,2025-09-03,2025-09-03
+2025-09-04,770,884,"5,9",7,2,,1,48,2025-09-04,2025-09-04
+2025-09-05,697,786,"5,32",3,3,2,,51,2025-09-05,2025-09-05
+2025-09-06,631,694,"6,05",6,2,1,1,42,2025-09-06,2025-09-06
+2025-09-07,627,694,"5,75",3,1,,1,40,2025-09-07,2025-09-07
+2025-09-08,1359,1503,"10,24",10,1,1,1,83,2025-09-08,2025-09-08
+2025-09-09,1413,1622,"10,87",11,1,2,,63,2025-09-09,2025-09-09
+2025-09-10,1529,1832,"12,3",24,4,,2,89,2025-09-10,2025-09-10
+2025-09-11,1467,1780,"11,59",23,3,1,2,71,2025-09-11,2025-09-11
+2025-09-12,1761,2127,"13,63",23,1,,1,79,2025-09-12,2025-09-12
+2025-09-13,1681,1980,"13,14",22,1,1,,74,2025-09-13,2025-09-13
+2025-09-14,1427,1593,"11,26",15,2,,1,60,2025-09-14,2025-09-14
+2025-09-15,2068,2375,"16,56",21,2,1,,101,2025-09-15,2025-09-15
+2025-09-16,2118,2473,"17,1",22,1,,1,114,2025-09-16,2025-09-16
+2025-09-17,2197,2563,"18,34",25,1,1,,127,2025-09-17,2025-09-17
+2025-09-18,2286,2705,"20,32",20,1,,1,133,2025-09-18,2025-09-18
+2025-09-19,3051,3634,"26,05",23,,1,1,162,2025-09-19,2025-09-19
+2025-09-20,2962,3574,"24,84",30,,,1,155,2025-09-20,2025-09-20
+2025-09-21,3044,3572,"25,23",33,,,2,159,2025-09-21,2025-09-21
+2025-09-22,3530,4224,"24,31",47,2,2,,199,2025-09-22,2025-09-22
+2025-09-23,3227,3771,"22,1",52,,,1,189,2025-09-23,2025-09-23
+2025-09-24,3424,4025,"23,37",49,,,1,201,2025-09-24,2025-09-24
+`;
+
+// Helper function to parse CSV
+function parseCSV(data) {
+    const rows = data.trim().split('\n');
+    const headers = rows.shift().split(',');
+    return rows.map(row => {
+        // This regex handles commas inside quoted values
+        const values = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+        let obj = {};
+        headers.forEach((header, i) => {
+            let value = values[i] ? values[i].replace(/"/g, '') : '';
+            if (header === 'Valor usado (BRL)') {
+                value = parseFloat(value.replace(',', '.')) || 0;
+            } else if (i > 0 && i < 9) { // Convert other numeric columns
+                value = parseInt(value) || 0;
+            }
+            obj[header] = value;
+        });
+        return obj;
+    });
+}
+
+// Main function to initialize the dashboard
+function initDashboard() {
+    const data = parseCSV(csvData);
+    
+    // --- Calculations ---
+    const totals = data.reduce((acc, row) => {
+        acc.spent += row['Valor usado (BRL)'];
+        acc.reach += row['Alcance'];
+        acc.clicks += row['Cliques no link'];
+        acc.conversations += row['Conversas por mensagem iniciadas'];
+        acc.comments += row['Comentários no post'];
+        acc.shares += row['Compartilhamentos do post'];
+        return acc;
+    }, { spent: 0, reach: 0, clicks: 0, conversations: 0, comments: 0, shares: 0 });
+
+    const avgCPC = totals.clicks > 0 ? (totals.spent / totals.clicks) : 0;
+    const costPerConversation = totals.conversations > 0 ? (totals.spent / totals.conversations) : 0;
+
+    // --- Update KPI Cards ---
+    document.getElementById('total-spent').textContent = `R$ ${totals.spent.toFixed(2).replace('.', ',')}`;
+    document.getElementById('total-reach').textContent = totals.reach.toLocaleString('pt-BR');
+    document.getElementById('total-clicks').textContent = totals.clicks.toLocaleString('pt-BR');
+    document.getElementById('avg-cpc').textContent = `R$ ${avgCPC.toFixed(2).replace('.', ',')}`;
+    
+    document.getElementById('total-conversations').textContent = totals.conversations.toLocaleString('pt-BR');
+    document.getElementById('total-comments').textContent = totals.comments.toLocaleString('pt-BR');
+    document.getElementById('total-shares').textContent = totals.shares.toLocaleString('pt-BR');
+    document.getElementById('cost-per-conversation').textContent = `R$ ${costPerConversation.toFixed(2).replace('.', ',')}`;
+
+    // --- Chart Data ---
+    const labels = data.map(row => new Date(row['Dia']).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' }));
+    const spentData = data.map(row => row['Valor usado (BRL)']);
+    const reachData = data.map(row => row['Alcance']);
+    const clicksData = data.map(row => row['Cliques no link']);
+    const conversationsData = data.map(row => row['Conversas por mensagem iniciadas']);
+    const commentsData = data.map(row => row['Comentários no post']);
+    const sharesData = data.map(row => row['Compartilhamentos do post']);
+    const thruplaysData = data.map(row => row['ThruPlays']);
+
+    // --- Render Charts ---
+    renderOverviewChart(labels, spentData, reachData, clicksData);
+    renderEngagementChart(labels, conversationsData, commentsData, sharesData);
+    renderVideoChart(labels, thruplaysData, spentData);
+    
+    // --- Navigation ---
+    setupNavigation();
+}
+
+// Chart Configurations
+const chartDefaultOptions = {
+    maintainAspectRatio: false,
+    responsive: true,
+    plugins: {
+        legend: {
+            position: 'bottom',
+        },
+    },
+    scales: {
+        x: {
+            grid: { display: false },
+        },
+        y: {
+            beginAtZero: true,
+            grid: { color: '#e5e7eb' },
+        }
+    }
+};
+
+function renderOverviewChart(labels, spentData, reachData, clicksData) {
+    const ctx = document.getElementById('overviewChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [
+                {
+                    label: 'Valor Gasto (BRL)',
+                    data: spentData,
+                    borderColor: '#3b82f6',
+                    backgroundColor: '#3b82f620',
+                    yAxisID: 'y',
+                    tension: 0.3,
+                    fill: true,
+                },
+                {
+                    label: 'Alcance',
+                    data: reachData,
+                    borderColor: '#10b981',
+                    backgroundColor: '#10b98120',
+                    yAxisID: 'y1',
+                    tension: 0.3,
+                },
+                {
+                    label: 'Cliques no Link',
+                    data: clicksData,
+                    borderColor: '#f97316',
+                    backgroundColor: '#f9731620',
+                    yAxisID: 'y2',
+                    tension: 0.3,
+                }
+            ]
+        },
+        options: {
+            ...chartDefaultOptions,
+            scales: {
+                x: { grid: { display: false } },
+                y: { type: 'linear', display: true, position: 'left', title: { display: true, text: 'Valor (R$)' } },
+                y1: { type: 'linear', display: true, position: 'right', grid: { drawOnChartArea: false }, title: { display: true, text: 'Pessoas' } },
+                y2: { display: false } // Hide clicks axis to simplify, but data is there
+            }
+        }
+    });
+}
+
+function renderEngagementChart(labels, conversationsData, commentsData, sharesData) {
+    const ctx = document.getElementById('engagementChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [
+                {
+                    label: 'Conversas',
+                    data: conversationsData,
+                    backgroundColor: '#3b82f6',
+                },
+                {
+                    label: 'Comentários',
+                    data: commentsData,
+                    backgroundColor: '#14b8a6',
+                },
+                {
+                    label: 'Compart.',
+                    data: sharesData,
+                    backgroundColor: '#f59e0b',
+                }
+            ]
+        },
+        options: {
+            ...chartDefaultOptions,
+            scales: {
+                x: { stacked: true, grid: { display: false } },
+                y: { stacked: true, beginAtZero: true }
+            }
+        }
+    });
+}
+
+function renderVideoChart(labels, thruplaysData, spentData) {
+    const ctx = document.getElementById('videoChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [
+                {
+                    label: 'ThruPlays',
+                    data: thruplaysData,
+                    borderColor: '#8b5cf6',
+                    backgroundColor: '#8b5cf620',
+                    yAxisID: 'y',
+                    tension: 0.3,
+                    fill: true,
+                },
+                {
+                    label: 'Valor Gasto (BRL)',
+                    data: spentData,
+                    borderColor: '#ef4444',
+                    backgroundColor: '#ef444420',
+                    yAxisID: 'y1',
+                    tension: 0.3,
+                }
+            ]
+        },
+        options: {
+             ...chartDefaultOptions,
+            scales: {
+                x: { grid: { display: false } },
+                y: { type: 'linear', display: true, position: 'left', title: { display: true, text: 'Visualizações' } },
+                y1: { type: 'linear', display: true, position: 'right', grid: { drawOnChartArea: false }, title: { display: true, text: 'Valor (R$)' } },
+            }
+        }
+    });
+}
+
+
+function setupNavigation() {
+    const pages = ['overview', 'engagement', 'insights'];
+    const navLinks = pages.map(id => document.getElementById(`nav-${id}`));
+    const pageViews = pages.map(id => document.getElementById(`page-${id}`));
+
+    function showPage(id) {
+        pageViews.forEach(page => page.classList.add('hidden'));
+        navLinks.forEach(link => link.classList.remove('active'));
+
+        document.getElementById(`page-${id}`).classList.remove('hidden');
+        document.getElementById(`nav-${id}`).classList.add('active');
+    }
+
+    navLinks.forEach(link => {
+        link.addEventListener('click', () => {
+            const id = link.id.replace('nav-', '');
+            showPage(id);
+        });
+    });
+
+    // Show initial page
+    showPage('overview');
+}
+
+
+// Start the application once the DOM is loaded
+document.addEventListener('DOMContentLoaded', initDashboard);
+
+</script>
+
+</body>
+</html>
